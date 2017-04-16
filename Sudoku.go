@@ -19,23 +19,39 @@
 package main
 
 import (
+    "bufio"
     "fmt"
-    "io/ioutil"
+    //"io"
+    "strconv"
+    //"strings"
+    "os"
 )
 
+func check(e error) {
+    if e != nil {
+        panic(e)
+    }
+}
+
 func main() {
-	dat, err := ioutil.ReadFile("sudoku-sample.txt")
-	if err != nil { 
-		panic(err) 
-	}
-	fmt.Print(string(dat))
+	f, err := os.Open("sudoku-sample.txt")	
+	check(err)
 
-	f, err := os.Open("/tmp/dat")	
-	if err != nil { 
-		panic(err) 
-	}
-
-	var board [9][9]int
+	scanner := bufio.NewScanner(f)
+	scanner.Split(bufio.ScanWords)
 	
-	
+	board := make([][]int, 9)
+	i := 0
+	for scanner.Scan() {
+		res, err := strconv.Atoi(scanner.Text())
+		check(err)
+	    board[i] = append(board[i], res)
+	    if len(board[i]) == 9 {
+	    	i = i + 1
+	    }
+	    if i > 8 {
+	    	break
+	    }
+	}	
+	fmt.Print(board)
 }
