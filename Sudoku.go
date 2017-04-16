@@ -21,26 +21,19 @@ package main
 import (
     "bufio"
     "fmt"
-    //"io"
     "strconv"
-    //"strings"
     "os"
 )
 
-func check(e error) {
-    if e != nil {
-        panic(e)
-    }
-}
+var board = make([][]int, 9)
 
-func main() {
-	f, err := os.Open("sudoku-sample.txt")	
+func readBoard(name string) () {
+	f, err := os.Open(name)	
 	check(err)
 
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanWords)
-	
-	board := make([][]int, 9)
+
 	i := 0
 	for scanner.Scan() {
 		res, err := strconv.Atoi(scanner.Text())
@@ -53,5 +46,16 @@ func main() {
 	    	break
 	    }
 	}	
+
 	fmt.Print(board)
+}
+
+func check(e error) {
+    if e != nil {
+        panic(e)
+    }
+}
+
+func main() {
+	readBoard("sudoku-sample.txt")
 }
