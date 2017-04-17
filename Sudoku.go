@@ -19,41 +19,39 @@
 Description: This is a Go program that tries to solve a given Sudoku board.
 */
 
-
 package main
 
 import (
     "bufio"
     "fmt"
-    //"io"
-    "strconv"
-    //"strings"
     "os"
+    "strconv"    
+    "time"
 )
 
 // global variables
-var sudokuBoard = make([][]int, 9)
+var sudokuBoard = make([][]int, 9)	// represents board
 
 // main()
 // Does all the work, calls all necessary functions for solving
 func main() {
 	readBoard("sudoku-sample.txt")
+	fmt.Print("\n Here is the given puzzle:\n ")
 	printBoard()
-	fmt.Print(check(0,0,1))
-	fmt.Print(check(0,0,6))
-	fmt.Print(check(0,0,4))
-	fmt.Print(check(0,3,1))
-	//true
-	fmt.Print(check(0,4,9))
-	fmt.Print(check(0,4,7))
-	fmt.Print(check(8,8,2))
-	fmt.Print(check(7,8,2))
-	fmt.Print(check(7,0,2))
-	fmt.Print(check(5,5,10))
+	
+	fmt.Print("\n\n Here is the solution:\n ")
+
+	start := time.Now()
+	solve(0, 0)
+	execution := time.Since(start)
+	printBoard()
+
+	fmt.Print("\nThis puzzle was solved in ", execution, "\n")
 }
 
 // check(error)
 // ensures that no errors occur in reading a file
+// @param e 	error code to compare
 func checkError(e error) {
 	if e != nil {
         panic(e)
@@ -61,7 +59,8 @@ func checkError(e error) {
 }
 
 // readBoard(string)
-// Reads a file into a sudoku board slice
+// reads a file into a sudoku board slice
+// @param name 	name of the file to read from
 func readBoard(name string) () {
 	f, err := os.Open(name)	
 	checkError(err)
@@ -83,25 +82,28 @@ func readBoard(name string) () {
 	}	
 }
 
-// printSudokuBoard will print the globally accessible board
+// printSudokuBoard()
+// will print the globally accessible board
 func printBoard() {
 	for i := 0; i != 9; i++ {
 		if i % 3 == 0&& i != 0 {
-			fmt.Print("------+-------+------\n")
+			fmt.Print("------+-------+------\n ")
 		}
 		for j := 0; j != 9; j++ {
 			if j % 3 == 0 && j != 0 {
 				fmt.Print("| ")
 			}
-			fmt.Print(sudokuBoard[i][j])
-			fmt.Print(" ")
+			fmt.Print(sudokuBoard[i][j], " ")
 		}
-		fmt.Print("\n")
+		fmt.Print("\n ")
 	}
 }
 
 // checkCol(col,num)
 // checks whether a number already exists within a column
+// @param col 	column to check
+// @param num 	number to check
+// @return 	whether a number is not in the column
 func checkCol(col int, num int) bool {
 	for i := 0; i != 9; i++ {
 		if sudokuBoard[i][col] == num {
@@ -113,6 +115,9 @@ func checkCol(col int, num int) bool {
 
 // checkRow(row,num)
 // checks whether a number already exists within a row
+// @param row 	row to check
+// @param num 	number to check
+// @return 	whether a number is not in the row
 func checkRow(row int, num int) bool {
 	for i := 0; i != 9; i++ {
 		if sudokuBoard[row][i] == num {
@@ -124,6 +129,10 @@ func checkRow(row int, num int) bool {
 
 // checkSubgrid(row,col,num)
 // checks whether a number already exists within a subgrid
+// @param row 	row to check
+// @param col 	column to check
+// @param num 	number to check
+// @return 	whether a number is not in the subgrid
 func checkSubgrid(row int, col int, num int) bool {
 	var gR int = gridCorner(row) //gridRow
 	var gC int = gridCorner(col) //gridCol
@@ -142,8 +151,9 @@ func checkSubgrid(row int, col int, num int) bool {
 	
 
 // gridCorner(roworcol)
-// returns the leftmost corner of a grid
-// acts as a helper for checkSubgrid
+// returns the leftmost corner of a grid; acts as a helper for checkSubgrid
+// @param roworcol 	position to check
+// @return 	a unique value assignd to this particular subgrid 
 func gridCorner(roworcol int) int {
 	var returnVal int = (((roworcol/3)+1)*3)-3
 	return returnVal
@@ -151,34 +161,36 @@ func gridCorner(roworcol int) int {
 
 // check(row,col,num)
 // performs all checks to see if a number can be placed
+// @param row 	row to check
+// @param col 	column to check
+// @param num 	number to check
+// @return 	whether a number is placeable at the described position
 func check(row int, col int, num int) bool {
 	return (checkCol(col,num) && checkRow(row,num) && checkSubgrid(row,col,num))
 }
 
 // solve(row,col)
 // attempts to solve a board using recursion
-// returns true if solvable, else false
+// @param row 	row to begin check
+// @param col 	column to begin check
+// @return 	whether the puzzle can be solved with given constraints
 func solve(row int, col int) bool {
-	/*if (row == 9) {
+	if row == 9 {
 		return true
-	}
-	else if (col == 9) {
+	} else if col == 9 {
 		return solve(row+1,0)
-	}
-	else if (sudokuBoard[row][col] > 0) {
+	} else if sudokuBoard[row][col] > 0 {
 		return solve(row,col+1)
-	}
-	else {
+	} else {
 		for i := 1; i != 10; i++ { 
-			if (check(row,col,i)){
+			if check(row,col,i) {
 				sudokuBoard[row][col] = i
-				if (solve(row,col+1)){
+				if solve(row,col+1){
 					return true
 				}
 			}
 		}
 		sudokuBoard[row][col] = 0
 		return false
-	}		*/
-	return true
+	}
 }
