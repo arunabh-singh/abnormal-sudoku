@@ -25,24 +25,46 @@ package main
 import (
     "bufio"
     "fmt"
+    //"io"
     "strconv"
+    //"strings"
     "os"
 )
 
 // global variables
 var sudokuBoard = make([][]int, 9)
 
+// main()
+// Does all the work, calls all necessary functions for solving
+func main() {
+	readBoard("sudoku-sample.txt")
+	printBoard()
+	fmt.Print(check(0,0,1))
+	fmt.Print(check(0,0,6))
+	fmt.Print(check(0,0,4))
+	fmt.Print(check(0,3,1))
+	//true
+	fmt.Print(check(0,4,9))
+	fmt.Print(check(0,4,7))
+	fmt.Print(check(8,8,2))
+	fmt.Print(check(7,8,2))
+	fmt.Print(check(7,0,2))
+	fmt.Print(check(5,5,10))
+}
+
 // check(error)
 // ensures that no errors occur in reading a file
 func checkError(e error) {
-	e != nil {
+	if e != nil {
         panic(e)
     }
 }
 
+// readBoard(string)
+// Reads a file into a sudoku board slice
 func readBoard(name string) () {
 	f, err := os.Open(name)	
-	check(err)
+	checkError(err)
 
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanWords)
@@ -50,9 +72,9 @@ func readBoard(name string) () {
 	i := 0
 	for scanner.Scan() {
 		res, err := strconv.Atoi(scanner.Text())
-		check(err)
-	    board[i] = append(board[i], res)
-	    if len(board[i]) == 9 {
+		checkError(err)
+	    sudokuBoard[i] = append(sudokuBoard[i], res)
+	    if len(sudokuBoard[i]) == 9 {
 	    	i = i + 1
 	    }
 	    if i > 8 {
@@ -61,23 +83,21 @@ func readBoard(name string) () {
 	}	
 }
 
-// main()
-// Does all the work, calls all necessary functions to solve
-func main() {
-	readBoard("sudoku-sample.txt")
-	fmt.Print(board)
-	if len(sudokuBoard[i]) == 3 || len(sudokuBoard[i]) == 6 {
-	    	fmt.Print("------+-------+------\n")
-	    }
-}
-
-func check(e error) {
-	fmt.Print(sudokuBoard)
-}
-
 // printSudokuBoard will print the globally accessible board
-func printBoard(board [9][9]int) {
-
+func printBoard() {
+	for i := 0; i != 9; i++ {
+		if i % 3 == 0&& i != 0 {
+			fmt.Print("------+-------+------\n")
+		}
+		for j := 0; j != 9; j++ {
+			if j % 3 == 0 && j != 0 {
+				fmt.Print("| ")
+			}
+			fmt.Print(sudokuBoard[i][j])
+			fmt.Print(" ")
+		}
+		fmt.Print("\n")
+	}
 }
 
 // checkCol(col,num)
@@ -94,9 +114,12 @@ func checkCol(col int, num int) bool {
 // checkRow(row,num)
 // checks whether a number already exists within a row
 func checkRow(row int, num int) bool {
-	//var disjointRow []int = sudokuBoard[row] - [num]
-	//return (disjointRow.length == 9)
-	return true;
+	for i := 0; i != 9; i++ {
+		if sudokuBoard[row][i] == num {
+			return false
+		}
+	}
+	return true
 }
 
 // checkSubgrid(row,col,num)
@@ -104,10 +127,17 @@ func checkRow(row int, num int) bool {
 func checkSubgrid(row int, col int, num int) bool {
 	var gR int = gridCorner(row) //gridRow
 	var gC int = gridCorner(col) //gridCol
-	//var grid [9]int = sudokuBoard[gR][gC..(gC+2)] + sudokuBoard[gR+1][gC..(gC+2)] + sudokuBoard[gR+2][gC..(gC+2)]
-	//var disjointRow []int = grid[0..8] - [num]
-	//return (disjointRow.length == 9)
-	return true;
+	var gridIsGood = true
+	if sudokuBoard[gR][gC] == num || sudokuBoard[gR][gC+1] == num || sudokuBoard[gR][gC+2] == num {
+		gridIsGood = false
+	}
+	if sudokuBoard[gR+1][gC] == num	|| sudokuBoard[gR+1][gC+1] == num || sudokuBoard[gR+1][gC+2] == num {
+		gridIsGood = false
+	}
+	if sudokuBoard[gR+2][gC] == num || sudokuBoard[gR+2][gC+1] == num || sudokuBoard[gR+2][gC+2] == num {
+		gridIsGood = false
+	}
+	return gridIsGood
 }
 	
 
