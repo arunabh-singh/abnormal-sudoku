@@ -1,23 +1,23 @@
 /*
-#Name: Zachary Romick
-#Email: zachary.romick@vanderbilt.edu
-#VUnet ID: romickz
-#Honor Statement: I pledge on my honor that I have neither
-#given nor received unauthorized aid on this assignment.
+ * Name: Zachary Romick
+ * Email: zachary.romick@vanderbilt.edu
+ * VUnet ID: romickz
+ * Honor Statement: I pledge on my honor that I have neither
+ * given nor received unauthorized aid on this assignment.
+ 
+ * Name: Arunabh Singh
+ * Email: arunabh.singh@vanderbilt.edu
+ * VUnet ID: singha4
+ * Honor Statement: I pledge on my honor that I have neither
+ * given nor received unauthorized aid on this assignment.
 
-#Name: Arunabh Singh
-#Email: arunabh.singh@vanderbilt.edu
-#VUnet ID: singha4
-#Honor Statement: I pledge on my honor that I have neither
-#given nor received unauthorized aid on this assignment.
-
-#Class: CS3270
-#Date: 4/16/17
-*/
+ * Class: CS3270
+ * Date: 4/16/17
+ */
 
 /*
-Description: This is a Go program that tries to solve a given Sudoku board.
-*/
+ * Description: This is a Go program that tries to solve a given Sudoku board.
+ */
 
 package main
 
@@ -42,11 +42,16 @@ func main() {
 	fmt.Print("\n\n Here is the solution:\n ")
 
 	start := time.Now()
-	solve(0, 0)
-	execution := time.Since(start)
-	printBoard()
+	solveable := solve(0, 0)
 
-	fmt.Print("\nThis puzzle was solved in ", execution, "\n")
+	if !solveable {
+		fmt.Print("No solution.\n")
+	} else {
+		execution := time.Since(start)
+		printBoard()
+
+		fmt.Print("\nThis puzzle was solved in ", execution, "\n")
+	}
 }
 
 // check(error)
